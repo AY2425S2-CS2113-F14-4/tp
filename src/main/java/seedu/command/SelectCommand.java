@@ -4,7 +4,7 @@ import seedu.exceptions.EZMealPlanException;
 import seedu.exceptions.InvalidSelectIndexException;
 import seedu.food.Meal;
 import seedu.logic.MealManager;
-import seedu.meallist.MealList;
+import seedu.meallist.Meals;
 import seedu.ui.UserInterface;
 
 import java.util.List;
@@ -35,9 +35,9 @@ public class SelectCommand extends FilterSelectCommand {
         String indexSubstring = getIndexSubstring();
         int inputIndex = checkValidParse(indexSubstring);
         Meal selectedMeal = checkValidInputIndex(inputIndex, filteredMealList);
-        MealList userMealList = mealManager.getUserList();
-        mealManager.addMeal(selectedMeal, userMealList);
-        ui.printAddMealMessage(selectedMeal, userMealList);
+        Meals userMeals = mealManager.getUserMeals();
+        mealManager.addMeal(selectedMeal, userMeals);
+        ui.printAddMealMessage(selectedMeal, userMeals);
     }
 
     private String getIndexSubstring() {

@@ -2,8 +2,8 @@ package seedu.ui;
 
 import seedu.food.Ingredient;
 import seedu.food.Meal;
-import seedu.meallist.MainList;
-import seedu.meallist.MealList;
+import seedu.meallist.MainMeals;
+import seedu.meallist.Meals;
 
 import java.util.List;
 import java.util.Scanner;
@@ -47,8 +47,8 @@ public class UserInterface {
         System.out.println(exception.getMessage());
     }
 
-    public void printAddMealMessage(Meal meal, MealList mealList) {
-        String mealListName = mealList instanceof MainList ? "main meal list" : "user meal List";
+    public void printAddMealMessage(Meal meal, Meals mealList) {
+        String mealListName = mealList instanceof MainMeals ? "main meal list" : "user meal List";
         String successAddMealMessage = "You have successfully added a meal: " + meal + " into " + mealListName + ".";
         System.out.println(successAddMealMessage);
         List<Meal> meals = mealList.getList();

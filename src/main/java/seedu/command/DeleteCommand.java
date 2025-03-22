@@ -2,7 +2,7 @@ package seedu.command;
 
 import seedu.exceptions.EZMealPlanException;
 import seedu.logic.MealManager;
-import seedu.meallist.MealList;
+import seedu.meallist.Meals;
 import seedu.ui.UserInterface;
 
 import java.util.logging.Logger;
@@ -19,10 +19,11 @@ public class DeleteCommand extends RemoveDeleteCommand {
     @Override
     public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlanException {
         super.execute(mealManager, ui);
-        MealList userList = mealManager.getUserList();
-        if (userList.contains(removedOrDeletedMeal)) {
-            int indexInUserList = userList.getIndex(removedOrDeletedMeal);
-            userList.removeMeal(indexInUserList + 1);
+        Meals userMeals = mealManager.getUserMeals();
+        if (userMeals.contains(removedOrDeletedMeal)) {
+            int indexInUserList = userMeals.getIndex(removedOrDeletedMeal);
+            userMeals.removeMeal(indexInUserList + 1);
+            ui.printRemovedMessage(removedOrDeletedMeal, userMeals.size());
             logger.fine("Command finished executing: Removed \"" + removedOrDeletedMeal.getName() + "\" meal " +
                     "from user list");
         }

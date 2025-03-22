@@ -14,7 +14,7 @@ public class MealCommand extends Command {
     @Override
     public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlanException {
         logger.fine("Executing MealCommand");
-        List<Meal> userMealList = mealManager.getUserList().getList();
+        List<Meal> userMealList = mealManager.getUserMeals().getList();
         ui.printMealList(userMealList, "user chosen meals");
     }
 }

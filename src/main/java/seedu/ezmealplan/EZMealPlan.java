@@ -4,11 +4,12 @@ import seedu.command.Command;
 import seedu.exceptions.EZMealPlanException;
 import seedu.food.Meal;
 import seedu.logic.MealManager;
-import seedu.meallist.MealList;
+import seedu.meallist.Meals;
 import seedu.storage.Storage;
 import seedu.ui.UserInterface;
 import seedu.parser.Parser;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -28,7 +29,10 @@ public class EZMealPlan {
         setupLogger(fileName);
         UserInterface ui = new UserInterface();
         MealManager mealManager = new MealManager();
-        constructLists(mealManager);
+        checkConstructedLists(mealManager);
+        // Check for valid meals that are present in the user list but not in the main list
+        // and add these meals to the main list.
+        mealManager.compareLists();
 
         ui.printGreetingMessage();
         String userInput;
@@ -44,39 +48,37 @@ public class EZMealPlan {
         }
     }
 
-    private static void constructLists(MealManager mealManager) {
+    private static void checkConstructedLists(MealManager mealManager) {
         try {
-            constructUserList(mealManager);
-            constructMainList(mealManager);
+            Storage.createListFiles();
+            File mainMealFile = Storage.getMainListFile();
+            File userMealFile = Storage.getUserListFile();
+            constructList(mealManager, mainMealFile);
+            constructList(mealManager, userMealFile);
+
         } catch (IOException ioException) {
             System.err.println("Could not load tasks: " + ioException.getMessage());
         }
     }
 
-    private static void constructMainList(MealManager mealManager) throws IOException {
-        // Create and load the main meal list (mainlist.txt)
-        Storage.createMainListFile(); // Similar to createFile(), but for MAIN_LIST_PATH.
-        List<Meal> mainMeals = Storage.loadMainList();
-        MealList mainMealList = mealManager.getMainList();
-        for (Meal meal : mainMeals) {
-            extractMealIntoList(meal, mainMealList, mealManager);
+    private static void constructList(MealManager mealManager, File selectedFile) throws IOException {
+        // Create and load both main meal list (mainList.txt) and user meal list (userList.txt)
+        List<Meal> mealList = Storage.loadExistingList(selectedFile);
+        Meals selectedMeals = selectedFile.equals(Storage.getMainListFile()) ?
+                mealManager.getMainMeals() : mealManager.getUserMeals();
+        // Load pre-set meals if the meal list from the main list file is empty.
+        if (mealList.isEmpty() && selectedFile.equals(Storage.getMainListFile())) {
+            mealList = Storage.loadPresetMeals();
+        }
+        for (Meal meal : mealList) {
+            extractMealIntoList(meal, selectedMeals, mealManager);
         }
     }
 
-    private static void constructUserList(MealManager mealManager) throws IOException {
-        // Create and load the user-selected meal list (data.txt)
-        Storage.createUserListFile();
-        List<Meal> userMeals = Storage.loadMeals();
-        MealList userMealList = mealManager.getUserList();
-        for (Meal meal : userMeals) {
-            extractMealIntoList(meal, userMealList, mealManager);
-        }
-    }
-
-    private static void extractMealIntoList(Meal meal, MealList mealList, MealManager mealManager) {
+    private static void extractMealIntoList(Meal meal, Meals meals, MealManager mealManager) {
         //Throw error message if detected an ingredient with invalid price and skips to the next meal.
         try {
-            mealManager.addMeal(meal, mealList);
+            mealManager.addMeal(meal, meals);
         } catch (EZMealPlanException ezMealPlanException) {
             System.err.println(ezMealPlanException.getMessage());
         }

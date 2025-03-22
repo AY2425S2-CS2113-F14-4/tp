@@ -65,7 +65,7 @@ public abstract class FilterSelectCommand extends Command {
         case byIng -> filterByIngList(mealManager);
         case byMname -> filterByMnameList(mealManager);
         case byMcost -> filterByMcostList(mealManager);
-        default -> mealManager.getMainList().getList();
+        default -> mealManager.getMainMeals().getList();
         };
     }
 

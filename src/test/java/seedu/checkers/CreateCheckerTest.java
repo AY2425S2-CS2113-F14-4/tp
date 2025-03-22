@@ -57,7 +57,7 @@ public class CreateCheckerTest {
                 " rice (1.5), egg (0.5), cucumber (1)";
         Command command = new CreateCommand(validUserInput);
         command.execute(mealManager, ui);
-        List<Meal> mealList = mealManager.getMainList().getList();
+        List<Meal> mealList = mealManager.getMainMeals().getList();
         int expectedMealListSize = 1;
         assertEquals(expectedMealListSize, mealList.size());
         checkExpectedStrings(mealList);
@@ -96,11 +96,11 @@ public class CreateCheckerTest {
     }
 
     private void checkExpectedListSize() {
-        int actualSize = mealManager.getMainList().getList().size();
+        int actualSize = mealManager.getMainMeals().getList().size();
         int expectedSize = 3;
         assertEquals(expectedSize, actualSize);
         System.out.println();
-        for (Meal meal : mealManager.getMainList().getList()) {
+        for (Meal meal : mealManager.getMainMeals().getList()) {
             System.out.println(meal.toString());
         }
     }

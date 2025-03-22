@@ -8,15 +8,12 @@ import seedu.food.Ingredient;
 import seedu.food.Meal;
 import seedu.food.Product;
 import seedu.logic.MealManager;
-import seedu.meallist.MealList;
+import seedu.meallist.Meals;
 import seedu.ui.UserInterface;
-import seedu.storage.Storage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Logger;
-
 
 public class CreateCommand extends Command {
     private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -34,15 +31,11 @@ public class CreateCommand extends Command {
                     "passing all the checks for input formatting error.");
         }
         assert isValidUserInput;
+
         Meal newMeal = createNewMeal();
-        MealList mainMealList = mealManager.getMainList();
-        mealManager.addMeal(newMeal, mainMealList);
-        try {
-            Storage.writeMainList(newMeal.toDataString());
-        } catch (IOException ioException) {
-            UserInterface.printMessage("Error writing to file: " + ioException.getMessage());
-        }
-        ui.printAddMealMessage(newMeal, mainMealList);
+        Meals mainMeals = mealManager.getMainMeals();
+        mealManager.addMeal(newMeal, mainMeals);
+        ui.printAddMealMessage(newMeal, mainMeals);
     }
 
     private Meal createNewMeal() throws EZMealPlanException {

@@ -1,7 +1,7 @@
 package seedu.exceptions;
 
-import seedu.meallist.MainList;
-import seedu.meallist.MealList;
+import seedu.meallist.MainMeals;
+import seedu.meallist.Meals;
 
 public class ViewIndexOutOfRangeException extends EZMealPlanException {
     int inputIndex;
@@ -10,10 +10,10 @@ public class ViewIndexOutOfRangeException extends EZMealPlanException {
     String mainMealListName = "main meal list";
     String userMealListName = "user meal list";
 
-    public ViewIndexOutOfRangeException(int inputIndex, MealList mealList) {
+    public ViewIndexOutOfRangeException(int inputIndex, Meals meals) {
         this.inputIndex = inputIndex;
-        this.listSize = mealList.size();
-        this.listName = mealList instanceof MainList ? mainMealListName : userMealListName;
+        this.listSize = meals.size();
+        this.listName = meals instanceof MainMeals ? mainMealListName : userMealListName;
     }
 
     @Override

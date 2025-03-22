@@ -4,7 +4,7 @@ import seedu.checkers.RemoveDeleteChecker;
 import seedu.exceptions.EZMealPlanException;
 import seedu.food.Meal;
 import seedu.logic.MealManager;
-import seedu.meallist.MealList;
+import seedu.meallist.Meals;
 import seedu.ui.UserInterface;
 
 import java.util.logging.Logger;
@@ -22,8 +22,8 @@ public abstract class RemoveDeleteCommand extends Command {
 
     @Override
     public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlanException {
-        MealList userMealList = mealManager.getUserList();
-        MealList mainMealList = mealManager.getMainList();
+        Meals userMeals = mealManager.getUserMeals();
+        Meals mainMeals = mealManager.getMainMeals();
         int indexOfIndex = 1;
 
         boolean isValidUserInput = checkValidUserInput();
@@ -34,11 +34,11 @@ public abstract class RemoveDeleteCommand extends Command {
         assert isValidUserInput;
         int index = Integer.parseInt(validUserInput.split("\\s+")[indexOfIndex]);
         if (removeOrDelete.equals(remove)) {
-            removedOrDeletedMeal = mealManager.removeMeal(index, userMealList);
-            ui.printRemovedMessage(removedOrDeletedMeal, userMealList.size());
+            removedOrDeletedMeal = mealManager.removeMeal(index, userMeals);
+            ui.printRemovedMessage(removedOrDeletedMeal, userMeals.size());
         } else if (removeOrDelete.equals(delete)) {
-            removedOrDeletedMeal = mealManager.removeMeal(index, mainMealList);
-            ui.printDeletedMessage(removedOrDeletedMeal, mainMealList.size());
+            removedOrDeletedMeal = mealManager.removeMeal(index, mainMeals);
+            ui.printDeletedMessage(removedOrDeletedMeal, mainMeals.size());
         }
     }
 

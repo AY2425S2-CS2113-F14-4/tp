@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class MealList {
+public abstract class Meals {
     protected final List<Meal> mealList = new ArrayList<>();
 
     public List<Meal> getList() {
@@ -25,7 +25,7 @@ public abstract class MealList {
 
     // Checks whether the newMeal already exists in the given meal list
     public void checkDuplicateMeal(Meal newMeal) throws EZMealPlanException {
-        String mealListName = this instanceof MainList ? "main meal list" : "user meal list";
+        String mealListName = this instanceof MainMeals ? "main meal list" : "user meal list";
         for (Meal meal : mealList) {
             if (meal.equals(newMeal)) {
                 throw new DuplicateMealException(newMeal.getName(), mealListName);

@@ -50,36 +50,17 @@ public class Meal extends Product {
     }
 
     public String toDataString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         // Append the meal name.
-        sb.append(getName());
+        stringBuilder.append(getName());
         // Append each ingredient in the required format: " | ingredientName (price)"
         for (Ingredient ingredient : ingredientList) {
-            sb.append(" | ");
-            sb.append(ingredient.getName());
-            sb.append(" (");
-            sb.append(String.format("%.2f", ingredient.getPrice()));
-            sb.append(")");
+            stringBuilder.append(" | ");
+            stringBuilder.append(ingredient.getName());
+            stringBuilder.append(" (");
+            stringBuilder.append(String.format("%.2f", ingredient.getPrice()));
+            stringBuilder.append(")");
         }
-        return sb.toString();
+        return stringBuilder.toString();
     }
-
-
-    public static Meal fromData(String data) throws InvalidPriceException {
-        String[] parts = data.split("\\|");
-        // Create a Meal with the first part as the name (and a temporary price)
-        int mealNameIndex = 0;
-        String mealName = parts[mealNameIndex];
-        Meal meal = new Meal(mealName);
-        // Set the correct price
-        int firstIngredientIndex = 1;
-        meal.setPrice(Double.parseDouble(parts[firstIngredientIndex]));
-        // Assuming the remaining parts represent ingredients, parse each one.
-        for (int i = 2; i < parts.length; i++) {
-            Ingredient ingredient = Ingredient.fromData(parts[i]);
-            meal.getIngredientList().add(ingredient);
-        }
-        return meal;
-    }
-
 }
