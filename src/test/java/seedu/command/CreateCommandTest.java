@@ -28,7 +28,7 @@ public class CreateCommandTest {
     final MealManager mealManager = new MealManager();
     final UserInterface ui = new UserInterface();
 
-    public static void main(String[] args) {
+    public CreateCommandTest() {
         String fileName = "CreateCommandTest.log";
         setupLogger(fileName);
     }
@@ -53,9 +53,8 @@ public class CreateCommandTest {
     }
 
     @Test
-    public void create_success() throws EZMealPlanException {
-        main(null);
-        logger.fine("running create_success");
+    public void createCommand_success() throws EZMealPlanException {
+        logger.fine("running createCommand_success()");
         String validUserInput = "create /mname chicken rice /ing chicken breast (2.5)," +
                                 " rice (1.5), egg (0.5), cucumber (1)";
         Command command = new CreateCommand(validUserInput);
@@ -68,12 +67,12 @@ public class CreateCommandTest {
     }
 
     @Test
-    public void create_fail() {
-        main(null);
-        logger.fine("running create_fail()");
+    public void createCommand_fail() {
+        logger.fine("running createCommand_fail()");
         duplicate_ingredient_catch();
         duplicate_meal_catch();
         invalidPriceFormat();
+        logger.info("createCommand_fail() test passed");
     }
 
     private void invalidPriceFormat() {

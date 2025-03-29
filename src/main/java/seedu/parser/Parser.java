@@ -5,12 +5,12 @@ import seedu.command.ClearCommand;
 import seedu.command.Command;
 import seedu.command.CreateCommand;
 import seedu.command.FilterCommand;
-import seedu.command.SelectCommand;
 import seedu.command.HelpCommand;
 import seedu.command.ListCommand;
 import seedu.command.MealCommand;
 import seedu.command.RemoveCommand;
 import seedu.command.DeleteCommand;
+import seedu.command.SelectCommand;
 import seedu.command.UnknownCommand;
 import seedu.command.ViewCommand;
 

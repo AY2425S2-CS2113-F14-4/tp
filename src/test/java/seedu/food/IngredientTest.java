@@ -131,7 +131,7 @@ public class IngredientTest {
             logger.warning("Expected exception but none was thrown");
             fail();
         } catch (InvalidPriceException invalidPriceException) {
-            assertEquals("The price of the salt must be greater than 0.\n",
+            assertEquals("The price of the salt must be greater than or equals to 0.\n",
                     invalidPriceException.getMessage());
             logger.info("Exception thrown with correct message");
         }

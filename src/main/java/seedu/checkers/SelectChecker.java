@@ -16,11 +16,13 @@ public class SelectChecker extends FilterSelectChecker {
     public void check() throws EZMealPlanException {
         super.check();
         indexStringCheck();
+        setPassed(true);
     }
 
     private void indexStringCheck() throws EZMealPlanException {
         String indexString = getIndexString().trim();
         if (indexString.isEmpty()) {
+            setPassed(false);
             throw new MissingMealIndexException(filterOrSelect);
         }
     }

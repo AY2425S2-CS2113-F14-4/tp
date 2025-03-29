@@ -14,11 +14,12 @@ import java.util.logging.FileHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemoveDeleteCheckerTest {
     private static final Logger logger = Logger.getLogger(RemoveDeleteCheckerTest.class.getName());
 
-    public static void main(String[] args) {
+    public RemoveDeleteCheckerTest() {
         String fileName = "RemoveDeleteCheckerTest.log";
         setupLogger(fileName);
     }
@@ -44,32 +45,39 @@ public class RemoveDeleteCheckerTest {
 
     @Test
     public void removeDeleteChecker_expectedInputs_success() throws EZMealPlanException {
+        logger.fine("Running removeDeleteChecker_expectedInputs_success()");
         String validUserInput = "remove 1";
         RemoveDeleteChecker checker = new RemoveDeleteChecker(validUserInput);
         checker.check();
         assertTrue(checker.isPassed());
+        logger.info("removeDeleteChecker_expectedInputs_success() passed");
     }
 
     @Test
     public void parseIndex_nonIntegerIndex_exceptionThrown() {
+        logger.fine("Running parseIndex_nonIntegerIndex_exceptionThrown()");
         String validUserInput = "remove t";
         RemoveDeleteChecker checker = new RemoveDeleteChecker(validUserInput);
         try {
             checker.check();
+            fail();
         } catch (EZMealPlanException ezMealPlanException) {
             assertEquals(new RemoveFormatException(validUserInput).getMessage(), ezMealPlanException.getMessage());
+            logger.info("parseIndex_nonIntegerIndex_exceptionThrown() passed");
         }
     }
 
     @Test
     public void extractIndex_noIndex_exceptionThrown() {
+        logger.fine("Running extractIndex_noIndex_exceptionThrown()");
         String validUserInput = "remove";
         RemoveDeleteChecker checker = new RemoveDeleteChecker(validUserInput);
         try {
             checker.check();
+            fail();
         } catch (EZMealPlanException ezMealPlanException) {
             assertEquals(new RemoveFormatException(validUserInput).getMessage(), ezMealPlanException.getMessage());
+            logger.info("extractIndex_noIndex_exceptionThrown() passed");
         }
     }
-
 }

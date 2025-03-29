@@ -39,7 +39,7 @@ public abstract class Meals {
     public Meal removeMeal(int index) throws EZMealPlanException {
         try {
             return mealList.remove(index - 1);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
             throw new RemoveIndexOutOfRangeException(index, mealList.size());
         }
     }

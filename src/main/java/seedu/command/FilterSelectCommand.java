@@ -89,7 +89,7 @@ public abstract class FilterSelectCommand extends Command {
 
     private static void checkMcostPositive(double mcostDouble) {
         int zero = 0;
-        if (mcostDouble <= zero) {
+        if (mcostDouble < zero) {
             throw new NumberFormatException();
         }
     }
