@@ -280,7 +280,7 @@ Below is the UML sequence diagram for the SelectCommand, illustrating its intera
   - Duplicate meal selections (attempting to add the same meal twice)
 - The test utilizes preset meals loaded from Storage to populate the meal list
 - Each test verifies expected exception messages match actual exception messages
--
+
 ###### Unit Test Code
 ```java
 @Test
@@ -414,9 +414,9 @@ public void createCommand_fail() {
     }
 ```
 
-#### 4. DeleteCommand
+#### 5. DeleteCommand
 
-##### 4.1 Design Overview
+##### 5.1 Design Overview
 
 ###### Function
 DeleteCommand is responsible for removing a specific meal from the main meal list and, if applicable, also removing the same meal from the user's wish list. It ensures consistency between related lists and provides user feedback via the UserInterface.
@@ -435,7 +435,7 @@ DeleteCommand is responsible for removing a specific meal from the main meal lis
 
 - Built on top of the shared abstract class RemoveDeleteCommand, which allows common functionality (like index parsing and list access) to be reused across similar commands (e.g., RemoveCommand).
 
-##### 4.2 Implementation Details
+##### 5.2 Implementation Details
 
 ###### Component Level: DeleteCommand Class
 
@@ -467,7 +467,7 @@ DeleteCommand is responsible for removing a specific meal from the main meal lis
     }
 ```
 
-##### 3.3 Sequence Diagram
+##### 5.3 Sequence Diagram
 ![.\diagrams\DeleteCommand.png](./diagrams/DeleteCommand.png)
 
 

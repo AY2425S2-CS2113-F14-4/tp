@@ -31,6 +31,36 @@ ingredients with their respective costs: `ingA ($1.00), ingB ($2.00) and ingC ($
 
 Refer to the [Features](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#features) below for details of each
 command.
+
+## 📋 Lists you will manage
+
+In EZMealPlan, there are three main lists you will interact with:
+
+### 🍽 Main Meal List
+
+This is the primary list where all your meals are stored.
+Whenever you use the `create /m` command, a new meal is added here.
+
+- View with: `list`
+- Delete from it: `delete /m INDEX`
+- Meals here can be recommended based on your budget
+
+### 🧾 User Meal List
+
+This is a secondary list where you can add custom meals using `create /u`.
+It’s useful for storing meals you don’t want included in the budget recommendation system.
+
+- View with: `view /u INDEX`
+- Not included in `recommend`
+
+### ⭐ Wish List
+The wish list is where you store your favorite or preferred meals that you want to keep track of for future use.
+
+- Add to wish list using: add `/w INDEX` (index refers to the main meal list)
+- View with: `wishlist`
+- Automatically updates if a meal in it is deleted from the main list
+
+
 ## Features 
 
 Notes about the command format:
