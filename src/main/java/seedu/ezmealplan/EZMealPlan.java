@@ -20,15 +20,15 @@ import java.util.logging.Logger;
 
 public class EZMealPlan {
     /**
-     * Main entry-point for the java.duke.Duke application.
+     * Main entry-point for EZMealPlan.
      */
     private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final UserInterface ui = new UserInterface();
+    private static final MealManager mealManager = new MealManager();
 
     public static void main(String[] args) {
         String fileName = "EZMealPlan.log";
         setupLogger(fileName);
-        UserInterface ui = new UserInterface();
-        MealManager mealManager = new MealManager();
         checkConstructedLists(mealManager);
         // Check for valid meals that are present in the user list but not in the main list
         // and add these meals to the main list.
