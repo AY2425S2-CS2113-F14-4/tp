@@ -17,7 +17,7 @@ public abstract class RemoveDeleteCommand extends Command {
     protected Meal removedOrDeletedMeal;
 
     public RemoveDeleteCommand(String userInputText) {
-        this.validUserInput = userInputText.trim();
+        validUserInput = userInputText.trim();
     }
 
     @Override
@@ -32,7 +32,9 @@ public abstract class RemoveDeleteCommand extends Command {
                     "passing all the checks for input formatting error.");
         }
         assert isValidUserInput;
-        int index = Integer.parseInt(validUserInput.split("\\s+")[indexOfIndex]) - 1;
+        String regexPattern = "\\s+";
+        int indexAdjustment = 1;
+        int index = Integer.parseInt(validUserInput.split(regexPattern)[indexOfIndex]) - indexAdjustment;
         if (removeOrDelete.equals(remove)) {
             removedOrDeletedMeal = mealManager.removeMeal(index, wishList);
             ui.printRemovedMessage(removedOrDeletedMeal, wishList.size());

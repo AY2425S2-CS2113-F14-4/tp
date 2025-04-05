@@ -71,7 +71,7 @@ public abstract class FilterSelectCommand extends Command {
 
     private List<Meal> filterByMcostList(MealManager mealManager) throws EZMealPlanException {
         int afterMcostIndex = this.lowerCaseInput.indexOf(mcost) + mcost.length();
-        String mcostInput = this.validUserInput.substring(afterMcostIndex).trim();
+        String mcostInput = validUserInput.substring(afterMcostIndex).trim();
         double mcostDouble = checkValidMcostPrice(mcostInput);
         return mealManager.filteringByMcost(mcostDouble);
     }
@@ -79,24 +79,31 @@ public abstract class FilterSelectCommand extends Command {
     private double checkValidMcostPrice(String mcostInput) throws EZMealPlanException {
         double mcostDouble;
         try {
+            checkTwoDecimalPlace(mcostInput);
             mcostDouble = Double.parseDouble(mcostInput);
-            checkMcostPositive(mcostDouble);
+            checkMcostOutOfRange(mcostDouble);
         } catch (NumberFormatException numberFormatException) {
             throw new InvalidMcostException();
         }
         return mcostDouble;
     }
 
-    private static void checkMcostPositive(double mcostDouble) {
-        int zero = 0;
-        if (mcostDouble < zero) {
+    private static void checkMcostOutOfRange(double mcostDouble) {
+        double zero = 0.00;
+        if (mcostDouble < zero || mcostDouble > Double.MAX_VALUE) {
+            throw new NumberFormatException();
+        }
+    }
+    private void checkTwoDecimalPlace(String ingredientPrice) throws NumberFormatException {
+        String twoDecimalPlaceRegex = "^\\d+\\.\\d{2}$";
+        if (!ingredientPrice.matches(twoDecimalPlaceRegex)) {
             throw new NumberFormatException();
         }
     }
 
     private List<Meal> filterByMnameList(MealManager mealManager) {
         int afterMnameIndex = this.lowerCaseInput.indexOf(mname) + mname.length();
-        String mnameInput = this.validUserInput.substring(afterMnameIndex).trim();
+        String mnameInput = validUserInput.substring(afterMnameIndex).trim();
         String splitRegex = "\\s*,\\s*";
         String[] mealNameArray = mnameInput.split(splitRegex);
         return mealManager.filteringByMname(mealNameArray);
@@ -104,7 +111,7 @@ public abstract class FilterSelectCommand extends Command {
 
     private List<Meal> filterByIngList(MealManager mealManager) {
         int afterIngIndex = this.lowerCaseInput.indexOf(ing) + ing.length();
-        String ingInput = this.validUserInput.substring(afterIngIndex).trim();
+        String ingInput = validUserInput.substring(afterIngIndex).trim();
         String splitRegex = "\\s*,\\s*";
         String[] ingredientsArray = ingInput.split(splitRegex);
         return mealManager.filteringByIng(ingredientsArray);

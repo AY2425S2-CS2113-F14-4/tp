@@ -5,8 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -14,7 +20,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
-import seedu.exceptions.EZMealPlanException;
+import seedu.storage.Storage;
 
 public class EZMealPlanTest {
     private static final Logger logger = Logger.getLogger(EZMealPlanTest.class.getName());
@@ -70,12 +76,12 @@ public class EZMealPlanTest {
     @Test
     public void testMainIntegrationAllCommands() {
         logger.fine("Starting testMainIntegration_AllCommands()");
-
+        
         // Simulate user input covering all major commands.
         String simulatedInput = String.join(System.lineSeparator(),
                 "recipes",
                 "wishlist",
-                "create /mname testMeal /ing ingredient1 (1.0), ingredient2 (2.0)",
+                "create /mname testMeal /ing ingredient1 (1.00), ingredient2 (2.00)",
                 "filter /mname testmeal",
                 "select 98",
                 "clear",
@@ -83,7 +89,7 @@ public class EZMealPlanTest {
                 "remove 1",
                 "view /r 1",
                 "delete 98",
-                "buy /ing ingredient1 (1.0)",
+                "buy /ing ingredient1 (1.00)",
                 "consume /ing ingredient2",
                 "recommend /ing ingredient1",
                 "bye"
@@ -102,11 +108,16 @@ public class EZMealPlanTest {
             System.setIn(testIn);
             System.setOut(new PrintStream(testOut));
 
+            Storage.createListFiles();
+            List<File> latestFiles = saveLatestLists();
             // Execute main program.
             int index = 0;
             EZMealPlan.main(new String[index]);
-        } catch (EZMealPlanException e) {
-            throw new RuntimeException(e);
+
+            Storage.createListFiles();
+            restoreLatestLists(latestFiles);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
         } finally {
             // Restore original streams.
             System.setIn(originalIn);
@@ -188,5 +199,103 @@ public class EZMealPlanTest {
                 "Program should exit gracefully after 'bye' command.");
 
         logger.info("testMainIntegration_AllCommands() passed");
+    }
+
+    private void restoreLatestLists(List<File> latestFiles) throws IOException {
+        int recipesFileIndex = 0;
+        int wishListFileIndex = 1;
+        int inventoryListFileIndex = 2;
+        restoreLatestRecipes(latestFiles.get(recipesFileIndex));
+        restoreLatestWishList(latestFiles.get(wishListFileIndex));
+        restoreLatestInventoryList(latestFiles.get(inventoryListFileIndex));
+    }
+
+    private void restoreLatestInventoryList(File tempInventoryListFile) throws IOException {
+        File inventoryListFile = Storage.getInventoryListFile();
+        Scanner scanner = new Scanner(tempInventoryListFile);
+        try (FileWriter fileCleaner = new FileWriter(inventoryListFile);
+             FileWriter fileWriter = new FileWriter(inventoryListFile, true)) {
+            while (scanner.hasNextLine()) {
+                fileWriter.append(scanner.nextLine()).append(System.lineSeparator());
+            }
+            scanner.close();
+        }
+        tempInventoryListFile.delete();
+    }
+
+    private void restoreLatestWishList(File tempWishListFile) throws IOException {
+        File wishListFile = Storage.getWishListFile();
+        Scanner scanner = new Scanner(tempWishListFile);
+        try (FileWriter fileCleaner = new FileWriter(wishListFile);
+             FileWriter fileWriter = new FileWriter(wishListFile, true)) {
+            while (scanner.hasNextLine()) {
+                fileWriter.append(scanner.nextLine()).append(System.lineSeparator());
+            }
+            scanner.close();
+        }
+        tempWishListFile.delete();
+    }
+
+    private void restoreLatestRecipes(File tempRecipesListFile) throws IOException {
+        File recipesListFile = Storage.getRecipesListFile();
+        Scanner scanner = new Scanner(tempRecipesListFile);
+        try (FileWriter fileCleaner = new FileWriter(recipesListFile);
+             FileWriter fileWriter = new FileWriter(recipesListFile, true)) {
+            while (scanner.hasNextLine()) {
+                fileWriter.append(scanner.nextLine()).append(System.lineSeparator());
+            }
+            scanner.close();
+        }
+        tempRecipesListFile.delete();
+    }
+
+    private List<File> saveLatestLists() throws IOException {
+        List<File> files = new ArrayList<>();
+        files.add(saveLatestRecipes());
+        files.add(saveLatestWishList());
+        files.add(saveLatestInventoryList());
+        return files;
+    }
+
+    private File saveLatestInventoryList() throws IOException {
+        String tempInventoryListPath = "data/tempInventoryList.txt";
+        File tempInventoryListFile = new File(tempInventoryListPath);
+        File inventoryListFile = Storage.getInventoryListFile();
+        Scanner scanner = new Scanner(inventoryListFile);
+        try (FileWriter fileWriter = new FileWriter(tempInventoryListFile, true)) {
+            while (scanner.hasNextLine()) {
+                fileWriter.append(scanner.nextLine()).append(System.lineSeparator());
+            }
+            scanner.close();
+        }
+        return tempInventoryListFile;
+    }
+
+    private File saveLatestWishList() throws IOException {
+        String tempWishListPath = "data/tempWishList.txt";
+        File tempWishListFile = new File(tempWishListPath);
+        File wishListFile = Storage.getWishListFile();
+        Scanner scanner = new Scanner(wishListFile);
+        try (FileWriter fileWriter = new FileWriter(tempWishListFile, true)) {
+            while (scanner.hasNextLine()) {
+                fileWriter.append(scanner.nextLine()).append(System.lineSeparator());
+            }
+            scanner.close();
+        }
+        return tempWishListFile;
+    }
+
+    private File saveLatestRecipes() throws IOException {
+        String tempRecipesPath = "data/tempRecipesList.txt";
+        File tempRecipesFile = new File(tempRecipesPath);
+        File recipesFile = Storage.getRecipesListFile();
+        Scanner scanner = new Scanner(recipesFile);
+        try (FileWriter fileWriter = new FileWriter(tempRecipesFile, true)) {
+            while (scanner.hasNextLine()) {
+                fileWriter.append(scanner.nextLine()).append(System.lineSeparator());
+            }
+            scanner.close();
+        }
+        return tempRecipesFile;
     }
 }

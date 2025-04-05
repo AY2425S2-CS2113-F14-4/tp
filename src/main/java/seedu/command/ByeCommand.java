@@ -70,7 +70,7 @@ public class ByeCommand extends Command {
         // Retrieve the list of ingredients from the inventory.
         List<Ingredient> ingredientList = mealManager.getInventory().getIngredients();
         // Get the file path for the inventory list.
-        String inventoryFilePath = Storage.getInventoryFilePath();
+        String inventoryFilePath = Storage.getInventoryListFilePath();
         // Clear the existing file and write the new list.
         clearAndUpdateFileForIngredients(ingredientList, inventoryFilePath,ui);
     }

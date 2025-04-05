@@ -73,8 +73,9 @@ public class FilterCommandTest {
     public void filterCommand_success() {
         mealManager.getRecipesList().getList().clear();
         logger.fine("running filterCommand_success()");
-        String[] validFilterCommands = {"filter /mname a", "filter /ing b,c", "filter /mcost 2", "filter /mname Mname"
-                , "filter /ing Ing", "filter /mcost 5"};
+        String[] validFilterCommands = {"filter /mname a", "filter /ing b,c", "filter /mcost 2.00", "filter /mname " +
+                                                                                                    "Mname"
+                , "filter /ing Ing", "filter /mcost 5.00"};
         runValidFilterCommands(validFilterCommands);
         addMeals();
         runValidFilterCommands(validFilterCommands);
@@ -100,14 +101,18 @@ public class FilterCommandTest {
 
     private void checkInvalidPriceFormat() {
         String testName = "checkInvalidPriceFormat()";
-        String invalidPrice = "filter /mcost mcost";
+        double one = 1.00;
+        String[] invalidPrices = {"filter /mcost mcost", "filter /mcost 1", "filter /mcost 1.0", "filter /mcost 1.0005"
+                , "filter /mcost .1", "filter /mcost .10", "filter /mcost " + (Double.MAX_VALUE + one)};
         String expectedMessage = new InvalidMcostException().getMessage();
-        checkInvalidFilterInput(testName, expectedMessage, invalidPrice);
+        for (String invalidPrice : invalidPrices) {
+            checkInvalidFilterInput(testName, expectedMessage, invalidPrice);
+        }
     }
 
     private void checkNegativePrice() {
         String testName = "checkNegativePrice()";
-        String negativePrice = "filter /mcost -2";
+        String negativePrice = "filter /mcost -2.00";
         String expectedMessage = new InvalidMcostException().getMessage();
         checkInvalidFilterInput(testName, expectedMessage, negativePrice);
     }

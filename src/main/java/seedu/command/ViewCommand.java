@@ -3,7 +3,7 @@ package seedu.command;
 import seedu.checkers.ViewChecker;
 import seedu.exceptions.EZMealPlanException;
 import seedu.exceptions.InvalidViewKeywordException;
-import seedu.exceptions.ViewEmptyListException;
+import seedu.exceptions.EmptyListException;
 import seedu.exceptions.ViewIndexOutOfRangeException;
 import seedu.food.Meal;
 import seedu.logic.MealManager;
@@ -20,8 +20,8 @@ public class ViewCommand extends Command {
     final String wishListSymbol = "/w";
 
     public ViewCommand(String userInput) {
-        this.validUserInput = userInput.trim();
-        this.lowerCaseInput = this.validUserInput.toLowerCase();
+        validUserInput = userInput.trim();
+        this.lowerCaseInput = validUserInput.toLowerCase();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ViewCommand extends Command {
         MealList mealList = recipesOrWishlist.equals(recipesSymbol) ? mealManager.getRecipesList()
                 : mealManager.getWishList();
         if (mealList.getList().isEmpty()) {
-            throw new ViewEmptyListException(mealList.getMealListName());
+            throw new EmptyListException(mealList.getMealListName());
         }
         int afterKeywordIndex = lowerCaseInput.indexOf(recipesOrWishlist) + recipesOrWishlist.length();
         String afterKeyword = lowerCaseInput.substring(afterKeywordIndex).trim();

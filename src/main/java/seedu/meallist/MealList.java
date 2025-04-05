@@ -47,7 +47,8 @@ public abstract class MealList {
         try {
             return mealList.remove(index);
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            throw new RemoveIndexOutOfRangeException(index, mealList.size());
+            int indexAdjustment = 1;
+            throw new RemoveIndexOutOfRangeException(index + indexAdjustment, mealList.size());
         }
     }
 

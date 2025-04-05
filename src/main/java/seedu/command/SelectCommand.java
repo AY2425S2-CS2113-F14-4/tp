@@ -14,7 +14,7 @@ public class SelectCommand extends FilterSelectCommand {
     private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public SelectCommand(String userInput) {
-        this.validUserInput = userInput.trim();
+        validUserInput = userInput.trim();
         this.lowerCaseInput = validUserInput.toLowerCase();
         this.filterOrSelect = "select";
     }
@@ -45,10 +45,10 @@ public class SelectCommand extends FilterSelectCommand {
         int inputMethodIndex;
         String inputMethod = getString(mcost, ing, mname);
         if (inputMethod.isEmpty()) {
-            return this.validUserInput.substring(afterSelectIndex).trim();
+            return validUserInput.substring(afterSelectIndex).trim();
         }
         inputMethodIndex = this.lowerCaseInput.indexOf(inputMethod);
-        return this.validUserInput.substring(afterSelectIndex, inputMethodIndex).trim();
+        return validUserInput.substring(afterSelectIndex, inputMethodIndex).trim();
     }
 
     private Meal checkValidInputIndex(int inputIndex, List<Meal> mealList) throws EZMealPlanException {

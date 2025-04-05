@@ -5,7 +5,7 @@ import seedu.ui.UserInterface;
 
 public class UnknownCommand extends Command {
     public UnknownCommand(String userInputText) {
-        this.validUserInput = userInputText;
+        validUserInput = userInputText;
     }
     @Override
     public void execute(MealManager mealManager, UserInterface ui) {

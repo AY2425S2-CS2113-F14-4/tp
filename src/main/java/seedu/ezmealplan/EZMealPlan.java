@@ -26,10 +26,10 @@ public class EZMealPlan {
     private static final UserInterface ui = new UserInterface();
     private static final MealManager mealManager = new MealManager();
 
-    public static void main(String[] args) throws EZMealPlanException {
+    public static void main(String[] args) {
         String fileName = "EZMealPlan.log";
         setupLogger(fileName);
-        checkConstructedLists(mealManager);
+        checkConstructedLists();
         // Check for valid meals that are present in the user list but not in the main list
         // and add these meals to the main list.
         mealManager.compareLists();
@@ -40,27 +40,38 @@ public class EZMealPlan {
             ui.prompt();
             userInput = ui.readInput();
             // extracts out the command from the user input
-            Command command = Parser.parse(userInput);
-            executeCommand(command, mealManager, ui);
-            if (command.isExit()) {
-                break;
+            Command command = checkParsedCommand(userInput);
+            if (command != null) {
+                executeCommand(command, mealManager, ui);
+                if (command.isExit()) {
+                    break;
+                }
             }
         }
         logger.fine("exiting EZMealPlan");
     }
 
-    private static void checkConstructedLists(MealManager mealManager) {
+    private static Command checkParsedCommand(String userInput) {
+        try {
+            return Parser.parse(userInput);
+        } catch (EZMealPlanException ezMealPlanException) {
+            ui.printErrorMessage(ezMealPlanException);
+            return null;
+        }
+    }
+
+    private static void checkConstructedLists() {
         // Create and load both main meal list (mainList.txt) and user meal list (userList.txt)
         try {
             Storage.createListFiles();
-            Storage.loadExistingInventory(mealManager);
-            constructRecipesList(mealManager);
-            constructWishList(mealManager);
+            Storage.loadExistingInventory(EZMealPlan.mealManager);
+            constructRecipesList(EZMealPlan.mealManager);
+            constructWishList(EZMealPlan.mealManager);
         } catch (IOException ioException) {
             System.err.println("Could not load tasks: " + ioException.getMessage());
         }
     }
-  
+
     private static void constructWishList(MealManager mealManager) throws IOException {
         File wishListFile = Storage.getWishListFile();
         MealList wishList = mealManager.getWishList();

@@ -128,11 +128,11 @@ public class UserInterfaceTest {
     }
 
     @Test
-    void printIngredientList_validMeal_success() throws InvalidPriceException {
+    void printIngredientList_validMeal_success() throws EZMealPlanException {
         logger.fine("running printIngredientList_validMeal_success()");
         Meal meal = new Meal("Test Meal");
-        meal.getIngredientList().add(new Ingredient("Chicken Breast", 2.5));
-        meal.getIngredientList().add(new Ingredient("Rice", 1.0));
+        meal.getIngredientList().add(new Ingredient("Chicken Breast", "2.50"));
+        meal.getIngredientList().add(new Ingredient("Rice", "1.00"));
 
         ui.printIngredientList(meal);
         String expected = "Here are the ingredients for " + meal + ":" + ls +

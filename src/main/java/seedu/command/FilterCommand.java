@@ -12,7 +12,7 @@ public class FilterCommand extends FilterSelectCommand {
     private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public FilterCommand(String userInput) {
-        this.validUserInput = userInput.trim();
+        validUserInput = userInput.trim();
         this.lowerCaseInput = validUserInput.toLowerCase();
         this.filterOrSelect = "filter";
     }

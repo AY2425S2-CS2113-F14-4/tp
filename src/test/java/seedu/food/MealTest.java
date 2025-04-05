@@ -1,8 +1,8 @@
 package seedu.food;
 
 import org.junit.jupiter.api.Test;
-import seedu.exceptions.DuplicateIngredientException;
-import seedu.exceptions.InvalidPriceException;
+import seedu.exceptions.EZMealPlanException;
+
 
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
@@ -42,9 +42,9 @@ class MealTest {
     }
 
     @Test
-    void equals_sameNameSameIngredient_true() throws InvalidPriceException, DuplicateIngredientException {
+    void equals_sameNameSameIngredient_true() throws EZMealPlanException {
         logger.fine("Running equals_sameNameSameIngredient_true()");
-        Ingredient chicken = new Ingredient("Chicken", 1);
+        Ingredient chicken = new Ingredient("Chicken", "1.00");
         Meal meal1 = new Meal("Chicken Rice");
         meal1.addIngredient(chicken);
         Meal meal2 = new Meal("Chicken Rice");
@@ -54,10 +54,10 @@ class MealTest {
     }
 
     @Test
-    void equals_sameNameDifferentIngredient_false() throws InvalidPriceException, DuplicateIngredientException {
+    void equals_sameNameDifferentIngredient_false() throws EZMealPlanException {
         logger.fine("Running equals_sameNameDifferentIngredient_false()");
-        Ingredient steamedChicken = new Ingredient("Steamed Chicken", 1);
-        Ingredient roastedChicken = new Ingredient("Roasted Chicken", 1);
+        Ingredient steamedChicken = new Ingredient("Steamed Chicken", "1.00");
+        Ingredient roastedChicken = new Ingredient("Roasted Chicken", "1.00");
         Meal meal1 = new Meal("Chicken Rice");
         meal1.addIngredient(steamedChicken);
         Meal meal2 = new Meal("Chicken Rice");
@@ -67,9 +67,9 @@ class MealTest {
     }
 
     @Test
-    void equals_differentNameSameIngredient_false() throws InvalidPriceException, DuplicateIngredientException {
+    void equals_differentNameSameIngredient_false() throws EZMealPlanException {
         logger.fine("Running equals_differentNameSameIngredient_false()");
-        Ingredient chicken = new Ingredient("Chicken", 1);
+        Ingredient chicken = new Ingredient("Chicken", "1.00");
         Meal meal1 = new Meal("Chicken Rice");
         meal1.addIngredient(chicken);
         Meal meal2 = new Meal("Chicken Rice Upsized");
@@ -79,10 +79,10 @@ class MealTest {
     }
 
     @Test
-    void equals_differentNameDifferentIngredient_false() throws InvalidPriceException, DuplicateIngredientException {
+    void equals_differentNameDifferentIngredient_false() throws EZMealPlanException {
         logger.fine("Running equals_differentNameDifferentIngredient_false()");
-        Ingredient chicken = new Ingredient("Chicken", 1);
-        Ingredient duck = new Ingredient("Duck", 1.2);
+        Ingredient chicken = new Ingredient("Chicken", "1.00");
+        Ingredient duck = new Ingredient("Duck", "1.20");
         Meal meal1 = new Meal("Chicken Rice");
         meal1.addIngredient(chicken);
         Meal meal2 = new Meal("Duck Rice");
@@ -93,9 +93,9 @@ class MealTest {
 
     @Test
     void equals_differentCapitalisationSameIngredient_true()
-            throws InvalidPriceException, DuplicateIngredientException {
+            throws EZMealPlanException {
         logger.fine("Running equals_differentCapitalisationSameIngredient_true()");
-        Ingredient chicken = new Ingredient("Chicken", 1);
+        Ingredient chicken = new Ingredient("Chicken", "1.00");
         Meal meal1 = new Meal("Chicken Rice");
         meal1.addIngredient(chicken);
         Meal meal2 = new Meal("chicken rice");
@@ -106,11 +106,11 @@ class MealTest {
 
     @Test
     void addIngredient_ingredients_correctIngredientListAndPrice()
-            throws InvalidPriceException, DuplicateIngredientException {
+            throws EZMealPlanException {
         logger.fine("Running addIngredient_ingredients_correctIngredientListAndPrice()");
-        Ingredient chicken = new Ingredient("Chicken", 1);
-        Ingredient rice = new Ingredient("Rice", 0.5);
-        Ingredient cucumber = new Ingredient("Cucumber", 0.3);
+        Ingredient chicken = new Ingredient("Chicken", "1.00");
+        Ingredient rice = new Ingredient("Rice", "0.50");
+        Ingredient cucumber = new Ingredient("Cucumber", "0.30");
         Meal meal1 = new Meal("Chicken Rice");
         meal1.addIngredient(chicken);
         meal1.addIngredient(rice);
@@ -121,12 +121,12 @@ class MealTest {
     }
 
     @Test
-    void toString_meal_correctFormat() throws InvalidPriceException, DuplicateIngredientException {
+    void toString_meal_correctFormat() throws EZMealPlanException {
         logger.fine("Running toString_meal_correctFormat()");
         Meal meal = new Meal("Chicken Rice");
-        Ingredient chicken = new Ingredient("Chicken", 1);
-        Ingredient rice = new Ingredient("Rice", 0.5);
-        Ingredient cucumber = new Ingredient("Cucumber", 0.3);
+        Ingredient chicken = new Ingredient("Chicken", "1.00");
+        Ingredient rice = new Ingredient("Rice", "0.50");
+        Ingredient cucumber = new Ingredient("Cucumber", "0.30");
         meal.addIngredient(chicken);
         meal.addIngredient(rice);
         meal.addIngredient(cucumber);

@@ -1,10 +1,9 @@
 package seedu.meallist;
 
 import org.junit.jupiter.api.Test;
-import seedu.exceptions.DuplicateIngredientException;
+
 import seedu.exceptions.DuplicateMealException;
 import seedu.exceptions.EZMealPlanException;
-import seedu.exceptions.InvalidPriceException;
 import seedu.exceptions.MealNotFoundException;
 import seedu.exceptions.RemoveIndexOutOfRangeException;
 import seedu.food.Ingredient;
@@ -28,15 +27,15 @@ class MealListTest {
     private final Meal meal2;
     private final Meal meal3;
 
-    public MealListTest() throws InvalidPriceException, DuplicateIngredientException {
+    public MealListTest() throws EZMealPlanException {
         String fileName = "MealListTest.log";
         setupLogger(fileName);
         meal1 = new Meal("Chicken Rice");
-        meal1.addIngredient(new Ingredient("Chicken", 1));
+        meal1.addIngredient(new Ingredient("Chicken", "1.00"));
         meal2 = new Meal("Apple Pie");
-        meal2.addIngredient(new Ingredient("Apple", 0.5));
+        meal2.addIngredient(new Ingredient("Apple", "0.50"));
         meal3 = new Meal("French Fries");
-        meal3.addIngredient(new Ingredient("Potato", 0.8));
+        meal3.addIngredient(new Ingredient("Potato", "0.80"));
 
     }
 

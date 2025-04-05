@@ -17,7 +17,7 @@ public class CreateCommand extends Command {
     private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public CreateCommand(String userInputText) {
-        this.validUserInput = userInputText.trim();
+        validUserInput = userInputText.trim();
         lowerCaseInput = userInputText.toLowerCase();
     }
 

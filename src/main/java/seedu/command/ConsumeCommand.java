@@ -19,7 +19,7 @@ public class ConsumeCommand extends Command {
 
 
     public ConsumeCommand(String userInput) {
-        this.validUserInput = userInput.trim();
+        validUserInput = userInput.trim();
     }
 
     /**

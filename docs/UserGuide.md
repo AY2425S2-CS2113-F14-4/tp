@@ -20,7 +20,7 @@ to run the application. The app will contain some preset meals.
 
 `recipes` : Lists all meals from the recipes list.
 
-`create /mname meal test /ing ingA(1), ingB(2), ingC(3)` : Creates a meal called `meal test` with the following 
+`create /mname meal test /ing ingA(1.00), ingB(2.00), ingC(3.00)` : Creates a meal called `meal test` with the following 
 ingredients with their respective costs: `ingA ($1.00), ingB ($2.00) and ingC ($3.00)`
 
 `remove 3` : Removes the 3rd meal shown in the user's wishlist.
@@ -106,8 +106,8 @@ Sample Output
 
 ![helpCommandWorkingSample.png](diagrams/helpCommandWorkingSample.png)
 
-* The list of `COMMAND_KEYWORD` includes `bye`,`clear`,`create`,`delete`,`filter`,`help`,`recipes`,`remove`,`select`,
-`view`, `wishlist`, `buy`, `consume`, `inventory`, and `recommend`.
+* The list of `COMMAND_KEYWORD` includes [bye](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#exiting-the-application-bye), [buy](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#adding-ingredients-into-the-inventory-buy), [clear](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#clearing-all-meals-from-the-wishlist-clear), [consume](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#removing-ingredients-from-the-inventory-consume), [create](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#creating-a-new-meal-create), [delete](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#deleting-a-meal-from-the-recipes-list-delete), [filter](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#filtering-the-recipes-list-filter), [help](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#viewing-help-help), [inventory](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#displaying-the-inventory-inventory), [recipes](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#displaying-the-recipes-list-recipes), [recommend](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#recommending-a-meal-recommend), [remove](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#removing-a-meal-from-the-recipes-list-remove), [select](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#adding-a-meal-into-to-the-wishlist-select),
+[view](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#viewing-details-about-a-meal-view) and [wishlist](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#displaying-the-wishlist-wishlist).
 
 ### Creating a new meal: `create`
 
@@ -115,11 +115,11 @@ This command creates a new meal with the relevant ingredients and adds the meal 
 
 Syntax:
 ```
-    create /mname MEAL_NAME /ing INGREDIENT_1_NAME (INGREDIENT_1_COST)[, INGREDIENT_2_NAME (INGREDIENT_2_COST), ...]
+    create /mname MEAL_NAME /ing INGREDIENT_1_NAME(INGREDIENT_1_COST)[, INGREDIENT_2_NAME(INGREDIENT_2_COST), ...]
 ```  
 Example code:
 ```
-    create /mname A_test_Meal /ing A(1.5), B(1.5)
+    create /mname A_test_Meal /ing A(1.50), B(1.50)
 ```
 Sample Output
 
@@ -129,18 +129,21 @@ Sample Output
 * The order of the ingredients does not matter. For example, the following code has the same effect:
 
 ```
-create /mname A_test_Meal /ing B(1.5), A(1.5)
+create /mname A_test_Meal /ing B(1.50), A(1.50)
 ```
 
 * To create a meal that contains more than 1 ingredient, `,` is needed to separate each ingredient.
+
 * Specifications of creating a meal:
-  1. **The price of every ingredient must not be negative.**
-  2. **Each meal should not have multiple ingredients with the same ingredient name.**
-  3. **Duplicate meals are not allowed.**
-     * Meals that contain the <ins>exact same set of ingredients</ins> (ignoring both ingredient and meal prices) should
-     have <ins>different meal names</ins>.
-     * Meals that contain <ins>different sets of ingredients</ins> (ignoring both ingredient and meal prices) can have
-     the <ins>same meal name</ins> (optional).
+  1. The input price for the ingredients **MUST BE IN 2 DECIMAL PLACES**. Example: `0.00`, `1.00`, `0.50`, `10.05` 
+  2. The price of every ingredient/meal can only **range from `0.00` to `DOUBLE.MAX_VALUE` (both inclusive)**. 
+  3. Each meal must **have at least 1 ingredient**.
+  4. **Each meal should not have multiple ingredients with the same ingredient name.**
+  5. **Duplicate meals are not allowed.** 
+     * Meals that contain the <ins>exact same set of ingredients</ins> (ignoring both ingredient and meal prices) <ins>should
+     have different meal names</ins>.
+     * Meals that contain <ins>different sets of ingredients</ins> (ignoring both ingredient and meal prices) <ins>may have
+     the same meal name</ins>.
      * To check for any existing meal before creating a new meal: you may use the `recipes` or `filter /mname` command to 
      find meals having the _same meal name that you intend to use_, followed by the `view` or `filter /ing` command to 
      check for _the list of ingredients in the meal(s) having the same meal name_ or _identify the meals having the same 
@@ -150,22 +153,22 @@ Example of Usage:
 
 Let A, B and C be ingredients. Let Meal_No. be meal name.
 
-`create /mname Meal_1 /ing A(1.5), B(1.5)`
+`create /mname Meal_1 /ing A(1.50), B(1.50)`
 
 **Allowed** subsequent `create` commands:
 
-`create /mname Meal_1 /ing A(2)`
+`create /mname Meal_1 /ing A(2.00)`
 
-`create /mname Meal_1 /ing A(2), C(1)`
+`create /mname Meal_1 /ing A(2.00), C(1.00)`
 
-`create /mname Meal_2 /ing B(1), A(1.5)` **ETC.**
+`create /mname Meal_2 /ing B(1.00), A(1.50)` **ETC.**
 
 
 **Invalid** subsequent `create` commands:
 
-`create /mname Meal_1 /ing A(1.5), B(1.5)`
+`create /mname Meal_1 /ing A(1.50), B(1.50)`
 
-`create /mname Meal_1 /ing B(1), A(2)`
+`create /mname Meal_1 /ing B(1.00), A(2.00)`
 
 ### Displaying the Recipes List: `recipes`
 
@@ -185,10 +188,32 @@ Sample output:
 
 ### Filtering the Recipes List: `filter`
 
-This command allows the user to filter the Recipes List. The filter conditions can be either the meal's name,
-ingredients, or total cost. This is chosen via the `/mname`, `/ing` or `/mname` tags.
+This command allows the user to filter the Recipes List. The filter conditions can be either the meal's name, ingredients, or total cost. This is chosen via the `/mname`, `/ing` or `/mname` tags. 
+* To filter with more than 1 ingredient using `/ing`, `,` is needed to separate each ingredient. 
+* The input price for the meal cost `/mcost` **MUST BE IN 2 DECIMAL PLACES** and can only **range from `0.00` to `DOUBLE.MAX_VALUE` (both inclusive)**. Example: `0.00`, `1.00`, `0.50`, `10.05`
 
-Syntax:
+
+**Take Note:**
+The filter conditions for the meal's name/ingredient(s) find the meals with the respective meal's name/ingredient(s) that **CONTAINS ALL user input(s)** regardless of:
+1. the casing (<ins>for</ins> `/mname` <ins>and</ins> `/ing` <ins>filtering methods</ins>)
+2. the number of duplicate inputs (<ins>for</ins> `/ing` <ins>filtering method only</ins>)
+3. the input sequence (<ins>for</ins> `/ing` <ins>filtering method only</ins>).
+4. whether the input(s) matches exactly to the meal name or ingredient name(s)
+
+Example:
+```filter /mname burger``` &rarr; outputs all meals with meal names that have the word `burger` such as `hamburger`, `deluxe BuRGer`, `mini-burger` etc.  
+
+```filter /ing chicken, chicken``` &rarr; outputs all meals that have the word `chicken` appearing in at least 1 of the ingredients 
+
+```filter /ing chicken, b``` &rarr; outputs all meals which have the words `chicken` **and** `b` <ins>appearing **at least ONCE** in the same or different ingredients</ins> regardless of the ingredients input sequence and casing.
+
+Examples:
+* Meals that contain `chicken breast` with/without other ingredient(s) that have/does not have `chicken` and `b` in their names.
+* Meals that contain `ChicKEN`, `pork rIBs` with/without other ingredients that have/does not have `chicken` and `b` in their names.
+* Meals that contain `BIGMcChicken` with/without other ingredients that have/does not have `chicken` and `b` in their names.
+* ETC. 
+
+General Syntax:
 ```
     filter /mcost MEAL_COST
     filter /ing INGREDIENT_1_NAME[, INGREDIENT_2_NAME, ...]
@@ -225,8 +250,7 @@ Sample output:
 
 ### Viewing details about a meal: `view`
 
-This command allows the user to view the details of a meal (e.g. name, ingredients, cost breakdown) from the Recipes
-List or Wishlist. This is chosen via the `/r` or `/w` tag.
+This command allows the user to view the details of a meal (e.g. name, ingredients, cost breakdown) from the Recipes list (`/r`) or Wishlist (`/w`).
 
 Syntax:
 ```
@@ -243,15 +267,18 @@ Sample output:
 
 ### Adding a meal into to the Wishlist: `select`
 
-This command allows user to select a recipe from the Recipes list and add it to their Wishlist. This command has 
+This command allows user to select a recipe from the Recipes List and add it to their Wishlist. This command has 
 two modes: 
 * **Normal mode**: Select by a meal's index in the Recipes List.
   * This is done using `select INDEX_NUMBER`
 * **Filtered mode**: Select by a meal's index as it appears in a filtered section of the Recipes List.
   * This is done by inserting the filter condition tag (`/mname`, `/ing`, or `/mcost`), e.g. `select INDEX_NUMBER 
     /ing INGREDIENT_1_NAME[, INGREDIENT_2_NAME, ...]`.
-  * For example, `select 1 /ing Chicken` means to filter Recipes List by all meals with the Chicken ingredient, and 
-    then selecting the first meal.
+  * To filter with more than 1 ingredient using `/ing`, `,` is needed to separate each ingredient.
+  * The input price for the meal cost `/mcost` **MUST BE IN 2 DECIMAL PLACES** and can only **range from `0.00` to `DOUBLE.MAX_VALUE` (both inclusive)**. Example: `0.00`, `1.00`, `0.50`, `10.05`
+  * For example, `select 1 /ing Chicken` means to filter out all the meals with at least 1 ingredient that has the word `Chicken` regardless of the casing from the Recipes List, and then selecting the first meal from the filtered list.
+
+The filtered mode has the same user input format conditions as the `filter` command simply by replacing `filter` with `select INDEX_NUMBER`. Refer to the **Take Note** section of the [filter](https://ay2425s2-cs2113-f14-4.github.io/tp/UserGuide.html#filtering-the-recipes-list-filter) command for more information.
 
 Syntax:
 ```
@@ -322,14 +349,16 @@ Sample output:
 ### Adding ingredients into the Inventory: `buy`
 
 This command allows the user to add ingredients into the inventory.
-
+* To buy more than 1 ingredient, `,` is needed to separate each ingredient.
+  The input price for the ingredients **MUST BE IN 2 DECIMAL PLACES**. Example: `0.00`, `1.00`, `0.50`, `10.05`
+* The price of every ingredient can only **range from `0.00` to `DOUBLE.MAX_VALUE` (both inclusive)**. 
 Syntax:
 ```
-    buy /ing INGRIDIENT_1_NAME (INGRIDIENT_1_PRICE)[, INGRIDIENT_2_NAME (INGREDIENT_2_PRICE), ...]
+    buy /ing INGRIDIENT_1_NAME(INGRIDIENT_1_PRICE)[, INGRIDIENT_2_NAME(INGREDIENT_2_PRICE), ...]
 ```
 Example code:
 ```
-    buy /ing Chicken(1),fish(1)
+    buy /ing Chicken(1.00), fish(1.00)
 ```
 Sample output:
 
@@ -355,10 +384,11 @@ Sample output:
 ### Removing ingredients from the Inventory: `consume`
 
 This command allows the user to remove ingredients from the inventory.
+* To consume more than 1 ingredient, `,` is needed to separate each ingredient. 
 
-Syntax:
+   Syntax:
 ```
-    consume /ing INGRIDIENT_NAME
+    consume /ing INGREDIENT_NAME
 ```
 Example code:
 ```
@@ -409,7 +439,7 @@ Sample output:
 ## Command Summary
 
 * Get help `help COMMAND_NAME`
-* Create meal: `create /mname MEAL_NAME /ing INGREDIENT1 (COST1)[, INGREDIENT2 (COST2), ...]`
+* Create meal: `create /mname MEAL_NAME /ing INGREDIENT1(COST1)[, INGREDIENT2(COST2), ...]`
 * View Recipe List: `recipes`
 * Filter Recipes List: `filter /mcost MEAL_COST` or `filter /ing INGREDIENT1[, INGREDIENT2, ...]` or `filter /mname 
 MEAL_NAME`
@@ -419,7 +449,7 @@ MEAL_NAME`
 * View Wishlist: `wishlist`
 * Remove from Wishlist: `remove INDEX`
 * Clear Wishlist: `clear`
-* Buy ingredient: `buy /ing INGREDIENT_1_NAME (INGREDIENT_1_COST)[, INGREDIENT_2_NAME (INGREDIENT_2_COST), ...]`
+* Buy ingredient: `buy /ing INGREDIENT_1_NAME(INGREDIENT_1_COST)[, INGREDIENT_2_NAME(INGREDIENT_2_COST), ...]`
 * View Inventory: `inventory`
 * Consume ingredient: `consume /ing INGREDIENT_NAME`
 * Get recommendation: `recommend /ing INGREDIENT_NAME`

@@ -29,9 +29,9 @@ public abstract class Product {
      * @throws InvalidPriceException If specified price is less than 0.
      */
     public void setPrice(double price) throws InvalidPriceException {
-        int zeroDollars = 0;
+        double zeroDollars = 0.00;
         String name = getName();
-        if (price < zeroDollars) {
+        if (price < zeroDollars || price > Double.MAX_VALUE) {
             logger.severe("Trigger InvalidPriceException()!");
             throw new InvalidPriceException(name);
         }

@@ -1,9 +1,9 @@
 package seedu.exceptions;
 
-public class ViewEmptyListException extends EZMealPlanException {
+public class EmptyListException extends EZMealPlanException {
     String recipeOrWishlistName;
 
-    public ViewEmptyListException(String recipeOrWishlistName) {
+    public EmptyListException(String recipeOrWishlistName) {
         this.recipeOrWishlistName = recipeOrWishlistName;
     }
     @Override

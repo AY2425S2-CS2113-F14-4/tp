@@ -9,6 +9,9 @@ public class RemoveFormatException extends EZMealPlanException {
 
     @Override
     public String getMessage() {
-        return "The index of meal to be removed must appear in your command: " + command;
+        return "The index of meal to be removed must appear in your command after the 'delete' or 'remove' keyword: "
+               + command + "\n"
+               + "Example: delete 10\n"
+               + "Example: remove 2\n";
     }
 }

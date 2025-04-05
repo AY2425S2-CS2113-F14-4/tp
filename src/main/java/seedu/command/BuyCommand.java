@@ -17,7 +17,7 @@ public class BuyCommand extends Command {
     private final List<Ingredient> ingredients = new ArrayList<>();
 
     public BuyCommand(String userInput) {
-        this.validUserInput = userInput.trim();
+        validUserInput = userInput.trim();
         this.lowerCaseInput = userInput.toLowerCase();
     }
 
@@ -112,10 +112,11 @@ public class BuyCommand extends Command {
      */
     private void addParsedIngredient(String name, String priceStr) {
         try {
-            double price = Double.parseDouble(priceStr);
-            Ingredient ingredient = new Ingredient(name, price);
+
+            Ingredient ingredient = new Ingredient(name, priceStr);
             ingredients.add(ingredient);
-        } catch (NumberFormatException | EZMealPlanException e) {
+        } catch (NumberFormatException | EZMealPlanException exception) {
+            System.out.println(exception.getMessage());
             logger.severe("Unexpected error while parsing ingredient: " + name);
         }
     }

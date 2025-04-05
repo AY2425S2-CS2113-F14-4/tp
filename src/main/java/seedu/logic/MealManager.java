@@ -1,6 +1,7 @@
 package seedu.logic;
 
 import seedu.exceptions.EZMealPlanException;
+import seedu.exceptions.EmptyListException;
 import seedu.food.Ingredient;
 import seedu.food.Inventory;
 import seedu.food.Meal;
@@ -120,21 +121,31 @@ public class MealManager {
 
     public Meal removeMeal(int index, MealList mealListInput) throws EZMealPlanException {
         chosenMealList = mealListInput instanceof RecipesList ? getRecipesList() : getWishList();
+        if(chosenMealList.getList().isEmpty()){
+            throw new EmptyListException(chosenMealList.getMealListName());
+        }
         return chosenMealList.removeMeal(index);
     }
 
     public void compareLists() {
         List<Meal> recipesList = this.recipesList.getList();
         List<Meal> wishList = this.wishList.getList();
-        for (Meal meal : wishList) {
+        List<Meal> wishListCopy = new ArrayList<>(wishList);
+        if(wishList.isEmpty()){
+            return;
+        }
+        for (Meal meal : wishListCopy) {
             if (!recipesList.contains(meal)) {
-                try {
-                    addMeal(meal, this.recipesList);
-                } catch (EZMealPlanException ezMealPlanException) {
-                    ezMealPlanException.getMessage();
-                }
+                wishList.remove(meal);
+                String removeIllegalMealMessage = "Removed " + meal + " containing the ingredients: " +
+                                                  meal.getIngredientList() +
+                                                  " from " + this.wishList.getMealListName() +
+                                                  " because it is not found in the "
+                                                  + this.recipesList.getMealListName() + ".";
+                System.out.println(removeIllegalMealMessage);
             }
         }
+        System.out.println();
     }
 
     public Inventory getInventory() {

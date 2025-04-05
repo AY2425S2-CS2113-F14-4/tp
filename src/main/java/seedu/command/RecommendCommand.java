@@ -18,15 +18,13 @@ public class RecommendCommand extends Command {
     private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private static final String RECOMMEND = "recommend";
     private static final String ING = "/ing";
-    private final String ingredientKeyword;
 
     /**
      * Constructs a RecommendCommand.
      * Expected user input format: "recommend /ing Chicken"
      */
     public RecommendCommand(String userInput) throws EZMealPlanException {
-        this.validUserInput = userInput.trim();
-        this.ingredientKeyword = "";
+        validUserInput = userInput.trim();
     }
 
     @Override

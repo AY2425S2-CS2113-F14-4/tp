@@ -58,8 +58,8 @@ public class SelectCommandTest {
         mealManager.getRecipesList().getList().clear();
         mealManager.getWishList().getList().clear();
         logger.fine("running selectCommand_success()");
-        String[] validSelectCommands = {"select 2 /mname a", "select 1 /ing b,c", "select 2 /mcost 2"
-                , "select 4 /mname Mname", "select 2 /ing Ing", "select 1 /mcost 5"};
+        String[] validSelectCommands = {"select 2 /mname a", "select 1 /ing b,c", "select 2 /mcost 2.00"
+                , "select 4 /mname Mname", "select 2 /ing Ing", "select 1 /mcost 5.00"};
         runValidSelectCommands(validSelectCommands);
         addMeals();
         runValidSelectCommands(validSelectCommands);
@@ -86,8 +86,8 @@ public class SelectCommandTest {
 
     private void checkInvalidIndexFormat() {
         String testName = "checkInvalidIndexFormat()";
-        String[] invalidIndexSelectCommands = {"select a /mname chicken", "select u /ing chicken", "select b /mcost 4.5"
-                , "select c"};
+        String[] invalidIndexSelectCommands = {"select a /mname chicken", "select u /ing chicken"
+                , "select b /mcost 4.50", "select c"};
         for (String invalidIndexSelectCommand : invalidIndexSelectCommands) {
             String expectedMessage = new InvalidSelectIndexException().getMessage();
             checkInvalidSelectInput(testName, expectedMessage, invalidIndexSelectCommand);
@@ -97,7 +97,7 @@ public class SelectCommandTest {
     private void checkIndexOutOfRange() {
         String testName = "checkIndexOutOfRange()";
         String[] invalidIndexSelectCommands = {"select -1 /mname chicken", "select 10 /ing seafood"
-                , "select 0 /mcost 4.5", "select 1000"};
+                , "select 0 /mcost 4.50", "select 1000"};
         for (String invalidIndexSelectCommand : invalidIndexSelectCommands) {
             String expectedMessage = new InvalidSelectIndexException().getMessage();
             checkInvalidSelectInput(testName, expectedMessage, invalidIndexSelectCommand);
@@ -113,21 +113,27 @@ public class SelectCommandTest {
 
     private void checkInvalidPriceFormat() {
         String testName = "checkInvalidPriceFormat()";
-        String invalidPrice = "select 2 /mcost mcost";
+        double one = 1.00;
+        String[] invalidPrices = {"select 2 /mcost mcost", "select 2 /mcost 1", "select 2 /mcost 1.0"
+                , "select 2 /mcost 1.0005", "select 2 /mcost .1", "select 2 /mcost .10"
+                , "select 2 /mcost " + (Double.MAX_VALUE + one)};
         String expectedMessage = new InvalidMcostException().getMessage();
-        checkInvalidSelectInput(testName, expectedMessage, invalidPrice);
+        for (String invalidPrice : invalidPrices) {
+            checkInvalidSelectInput(testName, expectedMessage, invalidPrice);
+        }
     }
 
     private void checkNegativePrice() {
         String testName = "checkNegativePrice()";
-        String negativePrice = "select 2 /mcost -2";
+        String negativePrice = "select 2 /mcost -2.00";
         String expectedMessage = new InvalidMcostException().getMessage();
         checkInvalidSelectInput(testName, expectedMessage, negativePrice);
     }
 
+
     private void checkSelectDuplicateMeal() {
         String testName = "checkSelectDuplicateMeal()";
-        String[] validSelectCommands = {"select 2 /mname chicken", "select 1 /ing chicken", "select 2 /mcost 4.5"
+        String[] validSelectCommands = {"select 2 /mname chicken", "select 1 /ing chicken", "select 2 /mcost 4.50"
                 , "select 10"};
         String[] mealNames = {"Chicken Satay", "Chicken Rice", "Claypot Rice", "Braised Duck Rice"};
         addMealsIntoUserList(validSelectCommands);

@@ -3,12 +3,12 @@ create
 create /mname
 create /ing
 create /ing /mname
-create /mname /ing cheesecake(9)
+create /mname /ing cheesecake(9.00)
 create /mname cheesecake /ing
-create /mname /ing cheesecake(-9)
-create /mname cheesecake /ing cheesecake(9), cheesecake(9)
-create /mname cheesecake /ing cheesecake(9)
-create /mname cheesecake /ing cheesecake(9), blueberry(1)
+create /mname /ing cheesecake(-9.00)
+create /mname cheesecake /ing cheesecake(9.00), cheesecake(9.00)
+create /mname cheesecake /ing cheesecake(9.00)
+create /mname cheesecake /ing cheesecake(9.00), blueberry(1.00)
 delete 16
 delete 16
 bye

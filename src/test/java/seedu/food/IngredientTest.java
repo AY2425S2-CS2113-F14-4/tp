@@ -2,10 +2,10 @@ package seedu.food;
 
 
 import seedu.exceptions.EZMealPlanException;
-
+import seedu.exceptions.IngredientPriceFormatException;
 
 import org.junit.jupiter.api.Test;
-import seedu.exceptions.InvalidPriceException;
+
 
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
@@ -49,7 +49,7 @@ public class IngredientTest {
     public void createIngredient_ingredient_success() throws EZMealPlanException {
         logger.fine("Running createIngredient_ingredient_success()");
         String ingredientName = "salt";
-        double ingredientPrice = 2.5;
+        String ingredientPrice = "2.50";
         Ingredient newIngredient = new Ingredient(ingredientName, ingredientPrice);
         String expectedOutput = "salt ($2.50)";
         assertEquals(expectedOutput, newIngredient.toString());
@@ -60,9 +60,9 @@ public class IngredientTest {
     public void equals_sameNameSamePrice_true() throws EZMealPlanException {
         logger.fine("Running equals_sameNameSamePrice_true()");
         String ingredient1Name = "salt";
-        double ingredient1Price = 2.5;
+        String ingredient1Price = "2.50";
         String ingredient2Name = "salt";
-        double ingredient2Price = 2.5;
+        String ingredient2Price = "2.50";
         Ingredient newIngredient1 = new Ingredient(ingredient1Name, ingredient1Price);
         Ingredient newIngredient2 = new Ingredient(ingredient2Name, ingredient2Price);
         assertEquals(newIngredient1, newIngredient2);
@@ -73,9 +73,9 @@ public class IngredientTest {
     public void equals_sameNameDifferentPrice_true() throws EZMealPlanException {
         logger.fine("Running equals_sameNameDifferentPrice_true()");
         String ingredient1Name = "salt";
-        double ingredient1Price = 2.5;
+        String ingredient1Price = "2.50";
         String ingredient2Name = "salt";
-        double ingredient2Price = 2;
+        String ingredient2Price = "2.00";
         Ingredient newIngredient1 = new Ingredient(ingredient1Name, ingredient1Price);
         Ingredient newIngredient2 = new Ingredient(ingredient2Name, ingredient2Price);
         assertEquals(newIngredient1, newIngredient2);
@@ -86,9 +86,9 @@ public class IngredientTest {
     public void equals_differentNameDifferentPrice_false() throws EZMealPlanException {
         logger.fine("Running equals_differentNameDifferentPrice_false()");
         String ingredient1Name = "salt";
-        double ingredient1Price = 2.5;
+        String ingredient1Price = "2.50";
         String ingredient2Name = "pepper";
-        double ingredient2Price = 2;
+        String ingredient2Price = "2.00";
         Ingredient newIngredient1 = new Ingredient(ingredient1Name, ingredient1Price);
         Ingredient newIngredient2 = new Ingredient(ingredient2Name, ingredient2Price);
         assertNotEquals(newIngredient1, newIngredient2);
@@ -99,9 +99,9 @@ public class IngredientTest {
     public void equals_differentNameSamePrice_false() throws EZMealPlanException {
         logger.info("Running equals_differentNameSamePrice_false()");
         String ingredient1Name = "salt";
-        double ingredient1Price = 2.5;
+        String ingredient1Price = "2.50";
         String ingredient2Name = "pepper";
-        double ingredient2Price = 2.5;
+        String ingredient2Price = "2.50";
         Ingredient newIngredient1 = new Ingredient(ingredient1Name, ingredient1Price);
         Ingredient newIngredient2 = new Ingredient(ingredient2Name, ingredient2Price);
         assertNotEquals(newIngredient1, newIngredient2);
@@ -109,12 +109,12 @@ public class IngredientTest {
     }
 
     @Test
-    void equals_differentCapitalisationSameName_true() throws InvalidPriceException {
+    void equals_differentCapitalisationSameName_true() throws EZMealPlanException {
         logger.fine("Running equals_differentCapitalisationSameName_true()");
         String ingredient1Name = "salt";
-        double ingredient1Price = 2.5;
+        String ingredient1Price = "2.50";
         String ingredient2Name = "Salt";
-        double ingredient2Price = 2.5;
+        String ingredient2Price = "2.50";
         Ingredient newIngredient1 = new Ingredient(ingredient1Name, ingredient1Price);
         Ingredient newIngredient2 = new Ingredient(ingredient2Name, ingredient2Price);
         assertEquals(newIngredient1, newIngredient2);
@@ -125,25 +125,60 @@ public class IngredientTest {
     public void setPrice_negativePrice_exceptionThrown() {
         logger.fine("Running setPrice_negativePrice_exceptionThrown()");
         String ingredientName = "salt";
-        double ingredientPrice = -2.5;
+        String ingredientPrice = "-2.50";
         try {
             new Ingredient(ingredientName, ingredientPrice);
             logger.warning("Expected exception but none was thrown");
             fail();
-        } catch (InvalidPriceException invalidPriceException) {
-            assertEquals("The price of the salt must be greater than or equals to 0.\n",
-                    invalidPriceException.getMessage());
+        } catch (EZMealPlanException ezMealPlanException) {
+            assertEquals(new IngredientPriceFormatException(ingredientName).getMessage(),
+                    ezMealPlanException.getMessage());
             logger.info("Exception thrown with correct message");
         }
     }
 
     @Test
-    public void setPrice_zeroPrice_success() throws InvalidPriceException {
+    public void setPrice_zeroPrice_success() throws EZMealPlanException {
         logger.fine("Running setPrice_zeroPrice_success()");
         String ingredientName = "salt";
-        double ingredientPrice = 0;
+        String ingredientPrice = "0.00";
+        double expectedPrice = Double.parseDouble(ingredientPrice);
         Ingredient newIngredient = new Ingredient(ingredientName, ingredientPrice);
-        assertEquals(ingredientPrice, newIngredient.getPrice());
+        assertEquals(expectedPrice, newIngredient.getPrice());
         logger.info("Ingredient successfully created");
+    }
+
+    @Test
+    public void setPrice_invalidPriceFormat() {
+        logger.fine("Running setPrice_invalidPriceFormat()");
+        String ingredientName = "salt";
+        String[] invalidIngredientPrices = {"1.005", ".01", "1", ".", "1.2", ".1"};
+        for( String invalidIngredientPrice : invalidIngredientPrices ) {
+            try{
+                new Ingredient(ingredientName,invalidIngredientPrice);
+                fail();
+            } catch (EZMealPlanException ezMealPlanException) {
+                assertEquals(new IngredientPriceFormatException(ingredientName).getMessage(),
+                        ezMealPlanException.getMessage());
+                logger.info("Exception thrown with correct message");
+            }
+        }
+        logger.info("setPrice_invalidPriceFormat() passed");
+    }
+
+    @Test
+    public void invalidPrice_aboveDoubleMaxValue(){
+        logger.fine("Running invalidPrice_AboveDoubleMaxValue()");
+        String ingredientName = "salt";
+        double one = 1;
+        String invalidIngredientPrice = Double.toString(Double.MAX_VALUE + one);
+        try{
+            new Ingredient(ingredientName, invalidIngredientPrice);
+        } catch (EZMealPlanException ezMealPlanException) {
+            assertEquals(new IngredientPriceFormatException(ingredientName).getMessage(),
+                    ezMealPlanException.getMessage());
+            logger.info("Exception thrown with correct message");
+        }
+        logger.info("setPrice_invalidPrice_aboveDoubleMaxValue() passed");
     }
 }
