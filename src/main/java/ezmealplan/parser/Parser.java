@@ -115,7 +115,7 @@ public class Parser {
     }
 
     private static Command parseSelect(String[] tokens, String input) throws ParserException {
-        assertExactTokenCount(tokens, 2, "Select command should have exactly one argument.");
+        assertMinTokenCount(tokens, 2, "Select command should have exactly one argument.");
         return new SelectCommand(input);
     }
 

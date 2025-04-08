@@ -256,11 +256,6 @@ public class ParserTest {
     }
 
     @Test
-    public void parseSelectCommand_selectWithTooManyArguments_exceptionThrown() {
-        assertThrows(ParserException.class, () -> Parser.parse("select item extra"));
-    }
-
-    @Test
     public void parseRecipesCommand_recipesWithExtraArguments_exceptionThrown() {
         assertThrows(ParserException.class, () -> Parser.parse("recipes extra"));
     }

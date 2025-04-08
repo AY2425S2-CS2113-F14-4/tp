@@ -1,41 +1,40 @@
 # Developer Guide
 
 ## Acknowledgements
+None
 
-{list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the
-original source as well}
-
-## Design
+## Design and Implementation
 
 EZMealPlan follows a modular and object-oriented design centered around a command-based architecture.
 
 ### Architecture Overview
 
+`EZmealplan` is the main entrance point for the app. It initialises the app and starts the other components.
+
 EZMealPlan consists of the following main packages:
 
-- `ezmealplan`: Initialises the app and starts the other components. Closes the other components upon exit of the app.
 - `ui`: Captures user input and displays outputs via the command line.
 - `parser`: Interprets user input and delegates to appropriate command classes.
 - `command`: Represents different actions that can be executed. Commands have corresponding `checker`s that perform data
   validation and error handling.
 - `logic`: Interacts with the `meallist`.
 - `meallist`: Encapsulates meal storage and implements operations on them, such as adding, removing, and viewing meals.
-- `food`: Represents meals and their subcomponents.
+- `food`: Represents meals, their subcomponents, and lists.
 - `storage`: Initialises, saves, and loads data to and from the disk.
 
+This class diagram shows the main associations and dependencies between the main classes across packages.
+![Architecture.png](diagrams/Architecture.png)
+
+EZMealPlan uses a logger. Note that:
 - Global logger is initialized in the `EZMealPlan` class.
-
 - Functional classes use `logger.WARNING` for exceptions and `logger.SEVERE` for assertions.
-
 - JUnit test classes use their own logger with `logger.INFO` for exceptions.
 
-### `ezmealplan`
+### `EZmealplan`
 
-This package contains the main `EZMealPlan` class, which is the entrance point for the app.
-
-It instantiates one `MealManager` and one `UserInterface`, which are shared across all other classes. It also
+The main `EZMealPlan` class instantiates one `MealManager` and one `UserInterface`, which are shared across all other classes. It also
 calls static methods in the `Command`, `Storage` and `Parser` classes. Below is a partial class diagram representing
-the associations:
+the associations and dependencies:
 ![EZMealPlanClass.png](diagrams/EZMealPlanClass.png)
 
 This sequence diagram shows the processes that EZMealPlan system has to undergo while it is being booted up before it
@@ -55,7 +54,7 @@ procedure follows for extracting meals from the `wishListFile` (`wishList.txt`).
 The inventory list will be loaded from the `inventoryListFile.txt` via `Storage.loadExistingInventory(mealManager)`
 method.
 
-### `ui`
+### `ui` and `parse`
 
 User input is captured by `readInput` in the `UserInterface` object, which is returned to `EZMealPlan`. `EZMealPlan`
 calls the static method `parse` in `Parser` to process the input, which then creates the appropriate `Command` object.
@@ -69,8 +68,12 @@ the respective commands will be explained in greater details and illustrated wit
 
 ### `food`
 
-The `food` package contains the abstract class `Product`, as well as `Ingredient` and `Meal` classes.
+The `food` package contains the abstract class `Product`, as well as `Ingredient` and `Meal` classes. It also 
+contains the `list` package, containing the abstract class `MealList`, its subclasses `MealList` and `WishList`, and 
+`Inventory`.
 
+The following Class diagrams shows the significant attributes, methods, inheritance and associations between the 
+classes:
 ![Food.png](diagrams/Food.png)
 
 The `Ingredient` class,
@@ -85,23 +88,45 @@ The `Meal` class,
 * Represents a meal, which has a `name`, `price`, and `ingredientList` of type `List<Ingredient>`.
 * Contains the `addIngredient` method that adds an `Ingredient` into its `ingredientList`. While doing so, it
   also retrieves and adds the `price` of the `Ingredient` into the meal's `price`.
-* Contains a private method that checks if an `Ingredient` to be added is already duplicated in the `ingredientList`,
-* and throws an exception.
+* Contains a private method that checks if an `Ingredient` to be added is already duplicated in the `ingredientList`, 
+and throws an exception.
+
+The abstract `MealList` class,
+
+* Represents a list of meals. The inner data structure used is an `ArrayList<Meal>`
+* Can be instantiated as either a `RecipesList` or a `WishList`
+* Contains methods to interact with the inner `ArrayList<Meal>`, such as `addMeal`, `removeMeal`, `getIndex`, and 
+  querying `size` and `contains`
+
+The `Inventory` class,
+
+* Represents the user's inventory. The inner data structure used is a `HashMap<Ingredient, Integer>` to store the 
+  quantity of each `Ingredient`
+* An `ArrayList<Ingredient>` also stores the unique `Ingredients` in the `HashMap`, and also acts a list of all the 
+  key objects in the `HashMap`
+* Contains methods to interact with the inner `HashMap`, including overloaded `addIngredient` and `removeIngredient` 
+  methods. This allows `Inventory` to support both adding and removing by `String` and `Ingredient` object.
 
 ### `command`
 
 The `command` package contains the abstract class `Command`, as well as various different subclasses that represent
 specific commands, such as `CreateCommand`, `ByeCommand`, `HelpCommand`. The specific commands will be elaborated below.
 
+Some `XYZCommand` classes use their corresponding `XYZChecker` to ensure the validity of its inputs. The checkers 
+also inherit from an abstract `Checker` class.
+
 Note that `FilterCommand` and `SelectCommand` inherit an abstract `FilterSelectCommand` class that inherits from
 `Command`. Similarly, `RemoveCommand` and `DeleteCommand` inherit an abstract `RemoveDeleteCommand`. This was
-done to abstract out similarities between the pairs of classes.
+done to abstract out similarities between the pairs of classes. Similarly for their `Checker`s.
 
+This Class diagram shows `FilterCommand`, `SelectCommand`, `RemoveCommand`, and `DeleteCommand`. It also shows an 
+example Command, `XYZCommand`, inheriting from the abstract `Command`, as well as its associated `XYZChecker`.
+The other checkers have been omitted for clarity:
 ![CommandClass.png](diagrams/CommandClass.png)
 
 ### Enhancements in the Command Module
 
-Both commands extend the abstract Command class, thereby following our command design pattern to decouple user input
+Specific commands extend the abstract `Command` class, thereby following our command design pattern to decouple user input
 parsing from the actual execution of features.
 The primary objective of these commands is to ensure a clear separation of concerns, improve maintainability, and allow
 for easier testing.
@@ -355,7 +380,8 @@ public void check() throws EZMealPlanException {
     boolean isValidUserInput = checkValidUserInput(filterOrSelect);
     if (!isValidUserInput) {
         logger.severe(
-                "Huge issue detected! The user input format remains invalid despite " + "passing all the checks for input formatting error.");
+                "Huge issue detected! The user input format remains invalid despite " 
+                        + "passing all the checks for input formatting error.");
     }
     assert isValidUserInput;
     List<Meal> filteredMealList = getFilteredMealList(mealManager);
@@ -409,7 +435,8 @@ public void selectCommand_success() {
     mealManager.getRecipesList().getList().clear();
     mealManager.getWishList().getList().clear();
     logger.fine("running selectCommand_success()");
-    String[] validSelectCommands = {"select 2 /mname a", "select 1 /ing b,c", "select 2 /mcost 2", "select 4 /mname Mname", "select 2 /ing Ing", "select 1 /mcost 5"};
+    String[] validSelectCommands = {"select 2 /mname a", "select 1 /ing b,c", "select 2 /mcost 2",
+            "select 4 /mname Mname", "select 2 /ing Ing", "select 1 /mcost 5"};
     runValidSelectCommands(validSelectCommands);
     addMeals();
     runValidSelectCommands(validSelectCommands);
@@ -562,7 +589,7 @@ public void byeCommandTest_success() {
 }
 ```
 
-### 5. CreateCommand and CreateChecker
+#### 5. CreateCommand and CreateChecker
 
 ##### 5.1 Design Overview
 
@@ -628,7 +655,8 @@ public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlan
     boolean isValidUserInput = checkValidUserInput();
     if (!isValidUserInput) {
         logger.severe(
-                "Huge issue detected! The user input format remains invalid despite " + "passing all the checks for input formatting error.");
+                "Huge issue detected! The user input format remains invalid despite " 
+                        + "passing all the checks for input formatting error.");
     }
     assert isValidUserInput;
 
@@ -811,7 +839,7 @@ public void deleteCommand_extraSpacingInput_success() throws EZMealPlanException
 }
 ```
 
-### 7. FilterCommand and FilterChecker
+#### 7. FilterCommand and FilterChecker
 
 ##### 7.1 Design Overview
 
@@ -884,7 +912,8 @@ public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlan
     boolean isValidUserInput = checkValidUserInput(filterOrSelect);
     if (!isValidUserInput) {
         logger.severe(
-                "Huge issue detected! The user input format remains invalid despite " + "passing all the checks for input formatting error.");
+                "Huge issue detected! The user input format remains invalid despite " 
+                        + "passing all the checks for input formatting error.");
     }
     assert isValidUserInput;
     List<Meal> filteredMealList = getFilteredMealList(mealManager);
@@ -933,7 +962,8 @@ Here are some snippets of the unit test code:
 @Test
 public void filterChecker_success() throws EZMealPlanException {
     logger.info("running filterchecker_success()");
-    String[] validFilterStrings = {"filter /mname a", "filter /mname a,b", "filter /ing c", "filter /ing c,d", "filter /mcost 1"};
+    String[] validFilterStrings = {"filter /mname a", "filter /mname a,b", "filter /ing c", 
+            "filter /ing c,d", "filter /mcost 1"};
     for (String filterString : validFilterStrings) {
         String filterMethod = getFilterMethod(filterString);
         FilterChecker checker = new FilterChecker(filterString, filterMethod);
@@ -951,7 +981,8 @@ public void filterChecker_success() throws EZMealPlanException {
 public void filterCommand_success() {
     mealManager.getRecipesList().getList().clear();
     logger.fine("running filterCommand_success()");
-    String[] validFilterCommands = {"filter /mname a", "filter /ing b,c", "filter /mcost 2.00", "filter /mname " + "Mname", "filter /ing Ing", "filter /mcost 5.00"};
+    String[] validFilterCommands = {"filter /mname a", "filter /ing b,c", "filter /mcost 2.00", 
+            "filter /mname " + "Mname", "filter /ing Ing", "filter /mcost 5.00"};
     runValidFilterCommands(validFilterCommands);
     addMeals();
     runValidFilterCommands(validFilterCommands);
@@ -959,7 +990,7 @@ public void filterCommand_success() {
 }
 ```
 
-### 8. RemoveCommand and RemoveDeleteChecker
+#### 8. RemoveCommand and RemoveDeleteChecker
 
 ##### 8.1 Design Overview
 
@@ -1023,7 +1054,8 @@ public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlan
     boolean isValidUserInput = checkValidUserInput();
     if (!isValidUserInput) {
         logger.severe(
-                "Huge issue detected! The user input format remains invalid despite " + "passing all the checks for input formatting error.");
+                "Huge issue detected! The user input format remains invalid despite " 
+                        + "passing all the checks for input formatting error.");
     }
     assert isValidUserInput;
     String regexPattern = "\\s+";
@@ -1132,7 +1164,7 @@ public void removeCommand_emptyList_throwsEmptyListException() throws EZMealPlan
 
 ```
 
-### 9. ClearCommand
+#### 9. ClearCommand
 
 ##### 9.1 Design Overview
 
@@ -1225,7 +1257,7 @@ void clearsWishList_noInputs_printsMessage() throws EZMealPlanException {
 }
 ```
 
-### 10. ViewCommand and ViewChecker
+#### 10. ViewCommand and ViewChecker
 
 ##### 10.1 Design Overview
 
@@ -1290,7 +1322,8 @@ public void execute(MealManager mealManager, UserInterface ui) throws EZMealPlan
     boolean isValidUserInput = checkValidUserInput();
     if (!isValidUserInput) {
         logger.severe(
-                "Huge issue detected! The user input format remains invalid despite " + "passing all the checks for input formatting error.");
+                "Huge issue detected! The user input format remains invalid despite " 
+                        + "passing all the checks for input formatting error.");
     }
     assert isValidUserInput;
     viewMeal(recipesOrWishlist, mealManager, ui);
@@ -1368,7 +1401,7 @@ public void testExecute_viewRecipeMeal_success() throws EZMealPlanException {
 }
 ```
 
-### 11. HelpCommand
+#### 11. HelpCommand
 
 ##### 11.1 Design Overview
 
@@ -1508,7 +1541,7 @@ public void helpCommand_wishlistInput_printsWishlistHelp() {
 }
 ```
 
-### 12. BuyCommand and BuyChecker
+#### 12. BuyCommand and BuyChecker
 
 ##### 12.1 Design Overview
 
@@ -1671,7 +1704,7 @@ public void buyChecker_missingIngKeyword_throwsMissingIngKeywordException() {
 }
 ```
 
-### 13. ConsumeCommand and ConsumeChecker
+#### 13. ConsumeCommand and ConsumeChecker
 
 ##### 13.1 Design Overview
 
@@ -1834,7 +1867,7 @@ public void consumeChecker_noIngredients_throwsMissingIngredientException() {
 }
 ```
 
-### 14. RecommendCommand and RecommendChecker
+#### 14. RecommendCommand and RecommendChecker
 
 ##### 14.1 Design Overview
 
@@ -2031,7 +2064,7 @@ public void recommendCommand_matchingIngredientInRecipes_success() throws Except
 }
 ```
 
-### 15. InventoryCommand
+#### 15. InventoryCommand
 
 ##### 15.1 Design Overview
 
@@ -2111,8 +2144,6 @@ Here is a snippet of the unit test code:
     }
 ```
 
-## Implementation
-
 ## Appendices
 
 ### Appendix A: Product scope
@@ -2132,11 +2163,11 @@ Here is a snippet of the unit test code:
 #### Value proposition
 
 EZMealPlan provides a **simple, command-line interface** for **selecting and managing meals**, **filtering by cost or
-ingredients**, and **building personalized meal plans**. It solves the problem of:
+ingredients**, and **building personalised meal plans**. It solves the problem of:
 
 - **Searching manually** for affordable, relevant recipes
 - **Remembering** preferred meals or dietary patterns
-  3- **Planning meals** within budget constraints
+- **Planning meals** within budget or ingredients constraints
 
 ### Appendix B: User Stories
 
@@ -2154,15 +2185,15 @@ ingredients**, and **building personalized meal plans**. It solves the problem o
 | v1.0    | User change their mind easily      | Clear my personal recipes in one command             | start to keep the recipes from scratch again                        |
 | v1.0    | User that appreciates convince     | Exit and save my my edits from the edits I made      | not update all the thing from scratch every time i use this program |
 
-| Version | As a ...        | I want to ...                                                                 | So that I can ...                                    |
-|---------|-----------------|-------------------------------------------------------------------------------|------------------------------------------------------|
-| v2.0    | Organized user  | View my ingredient inventory                                                  | Know what ingredients I currently have available     |
-| v2.0    | User            | Add bought ingredients to my inventory                                        | Keep track of ingredients I purchased                |
-| v2.0    | User            | Remove consumed ingredients from my inventory                                 | Keep my ingredient inventory accurate and up to date |
-| v2.0    | Indecisive user | Get recipe recommendations from my wishlist                                   | Decide what to cook next                             |
-| v2.0    | Indecisive user | Get recipe recommendations from the user list if the wish list do not have it | Expand my choices                                    |
-| v2.0    | Indecisive user | Get recipe recommendations by the ingredients                                 | let the program decided for me on what to eat        |
-| v2.0    | Indecisive user | know what ingredients that i am missing for the recommended recipes           | know what to buy based on the missing ingredients    |
+| Version | As a ...        | I want to ...                                                       | So that I can ...                                    |
+|---------|-----------------|---------------------------------------------------------------------|------------------------------------------------------|
+| v2.0    | Organized user  | View the ingredients that I own                                     | Know what ingredients I currently have available     |
+| v2.0    | User            | Add bought ingredients to my inventory                              | Keep track of ingredients I purchased                |
+| v2.0    | User            | Remove consumed ingredients from my inventory                       | Keep my ingredient inventory accurate and up to date |
+| v2.0    | Indecisive user | Get recipe recommendations based on my favourites                   | Decide what to cook next                             |
+| v2.0    | Indecisive user | Get new recipe recommendations                                      | Expand my choices                                    |
+| v2.0    | Lazy user       | Get recipe recommendations by the ingredients                       | Let the program decided for me on what to eat        |
+| v2.0    | Indecisive user | Know what ingredients that I am missing for the recommended recipes | Know what to buy based on the missing ingredients    |
 
 ### Appendix C: Non-Functional Requirements
 
@@ -2181,6 +2212,8 @@ ingredients**, and **building personalized meal plans**. It solves the problem o
 - **Recipes List** – All available meals in the system.
 
 - **Wishlist** – Meals selected by the user for their meal plan.
+
+- **Inventory** - A list of ingredients that the user currently owns.
 
 - **Command** – A user instruction (e.g., `filter`, `view`, `exit`).
 
@@ -2202,11 +2235,7 @@ java -jar ezmealplan.jar
 
 ### Testing Scenarios
 
-- **`Load data`**: Ensure recipesList.txt and wishList.txt are present.
-
-- **`recipes`**: Shows all meals alphabetically sorted.
-
-- **`wishlist`**: Displays meals user has selected.
+- **`recipes`**: Shows all meals in the recipes list alphabetically sorted.
 
 - **`filter /mcost 5.00`**: Shows meals costing exactly $5.00.
 
@@ -2214,7 +2243,9 @@ java -jar ezmealplan.jar
 
 - **`select 2 /mname chicken`**: Selects the second filtered result.
 
-- **`create /mname burger /ing bun (1.00), patty (2.00)`**: Adds new meal.
+- **`wishlist`**: Displays meals in user's wishlist.
+
+- **`create /mname burger /ing bun (1.00), patty (2.00)`**: Adds new meal into recipes list.
 
 - **`view /r 1`**: Displays first meal from the recipes list.
 
@@ -2224,4 +2255,12 @@ java -jar ezmealplan.jar
 
 - **`clear`**: Empties the wishlist.
 
-- **`exit`**: Saves both lists and exits.
+- **`buy /ing bun (1.00), patty (2.00)`**: Buy the two ingredients into your inventory
+
+- **`inventory`**: View your inventory
+
+- **`recommend /ing bun`**: Recommend a meal containing `bun`
+
+- **`consume /ing bun, patty`**: Consume the two ingredients
+
+- **`bye`**: Saves both lists and exits.
